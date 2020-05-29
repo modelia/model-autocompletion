@@ -1,12 +1,9 @@
 # coding: utf-8
 
-# In[30]:
-
-
 import numpy as np
 from scipy import spatial
 import matplotlib.pyplot as plt
-from sklearn.manifold import TSNE
+# from sklearn.manifold import TSNE
 import nltk
 from nltk.corpus import wordnet as wn
 from functools import reduce
@@ -15,13 +12,7 @@ from itertools import permutations, combinations, chain
 import time
 
 
-# In[31]:
-
-
 nltk.download('wordnet')
-
-
-# In[32]:
 
 
 def load_glove(path):
@@ -36,71 +27,6 @@ def load_glove(path):
             embeddings_dict[token] = vector
     print("GloVe Embeddings loaded")
     return embeddings_dict
-
-
-# In[33]:
-
-
-def euclidean_distance(glove_emb_dict, w1, w2):
-    emb1 = glove_emb_dict[w1]
-    emb2 = glove_emb_dict[w2]
-    return spatial.distance.euclidean(emb1, emb2)
-
-def find_closest_embeddings(glove_emb_dict, embedding):
-    return sorted(glove_emb_dict.keys(), key=lambda token: spatial.distance.euclidean(glove_emb_dict[token], embedding))    
-
-def find_closest_concepts(glove_emb_dict, concepts, negative, num):
-    embeddings = glove_emb_dict[concepts[0]]
-    for t in concepts: #range(1, len(concepts)):
-        embeddings = embeddings + glove_emb_dict[t]
-    for t in negative:
-        embeddings = embeddings - glove_emb_dict[t]
-    closest_terms = find_closest_embeddings(glove_emb_dict, embeddings)[:num] # return the 20 most similar concepts
-    # closest_terms = set(closest_terms) - set(concepts) # remove words that we already have
-    # print(closest_terms)
-    return closest_terms
-
-_empty_powerset = ((), )
-
-def powerset(someset):
-    size = len(someset)
-    combs = (combinations(someset, k) for k in range(1, size+1))
-    return chain(_empty_powerset, *combs)
-
-def get_glove_recommendations(glove_emb_dict, words, negative, num):
-    """
-    Given a list of words, we don't only compute the closest words to the whole set, but also to its subsets,
-    i.e., we have to campute the powerset of the original set.
-    For instance, if we have {'1', '2', '3'}, we compute the closest_concepts for:
-    {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3} and {1, 2, 3} and return a set with all the results.
-    As we said in the comment of "find_closest_concepts", we should consider these sets as lists, permute them all
-    and compute the closest terms for each permutation. Nevertheless, I've observed that the results are very similar
-    and the performance degrades a lot, so I've commented the version below (which computes the powerset and then the 
-    permutation and I've left a simplified one that only takes into account the powerset (done by hand).
-    
-    recomm = []
-    for subset in tuple(powerset(words)):
-        if (len(subset) != 0):
-            perm = permutations(subset)
-            for subset1 in list(perm):
-                concepts = find_closest_concepts(subset1, num)
-                recomm = recomm + concepts
-    return list(OrderedDict.fromkeys(recomm)) #remove duplicates and return
-    """
-    aux = []
-    recomm = []
-    for w in words:
-        aux.append(w)
-        # if len(negative) == 0:
-        concepts = find_closest_concepts(glove_emb_dict, aux, negative, num)
-        recomm = recomm + concepts
-        # else:
-        #    concepts = find_closest_concepts_negative(aux, negative, num)
-        #    recomm = recomm + concepts
-    return recomm
-
-
-# In[34]:
 
 
 def generate_synonym(input_word):
@@ -142,7 +68,7 @@ def get_pos(input_word):
     is_verb = False
     pos = set()
     for syn in synset:
-        print(syn)
+        # print(syn)
         s = syn.name().split('.')
         pos.add(s[1])
     return pos
@@ -165,7 +91,7 @@ def is_verb(input_word):
 
 def is_noun(input_word):
     pos = get_pos(input_word)
-    return 'v' in pos
+    return 'n' in pos
 
 def lemmatize(input_word):
     m = wn.morphy(input_word)
@@ -210,8 +136,73 @@ def process_with_wordnet_multiple_lemmatizing(input_word):
 def exists_in_wordnet(word):
     return len(wn.synsets(word)) > 0
 
+def removeVerbs(list):
+    result = []
+    for w in list:
+        if not (is_verb(w) and (not is_noun(w))):
+            result.append(w)
+    return result
 
-# In[35]:
+
+def euclidean_distance(glove_emb_dict, w1, w2):
+    emb1 = glove_emb_dict[w1]
+    emb2 = glove_emb_dict[w2]
+    return spatial.distance.euclidean(emb1, emb2)
+
+def find_closest_embeddings(glove_emb_dict, embedding):
+    return sorted(glove_emb_dict.keys(), key=lambda token: spatial.distance.euclidean(glove_emb_dict[token], embedding))    
+
+def find_closest_concepts(glove_emb_dict, concepts, negative, num):
+        embeddings = glove_emb_dict[concepts[0]]
+        for t in concepts: #range(1, len(concepts)):
+            if t in glove_emb_dict:
+                embeddings = embeddings + glove_emb_dict[t]
+        for t in negative:
+            if t in glove_emb_dict:
+                embeddings = embeddings - glove_emb_dict[t]
+        closest_terms = find_closest_embeddings(glove_emb_dict, embeddings)[:num] # return the 20 most similar concepts
+        # closest_terms = set(closest_terms) - set(concepts) # remove words that we already have
+        # print(closest_terms)
+        return closest_terms
+
+_empty_powerset = ((), )
+
+def powerset(someset):
+    size = len(someset)
+    combs = (combinations(someset, k) for k in range(1, size+1))
+    return chain(_empty_powerset, *combs)
+
+def get_glove_recommendations(glove_emb_dict, words, negative, num):
+    """
+    Given a list of words, we don't only compute the closest words to the whole set, but also to its subsets,
+    i.e., we have to campute the powerset of the original set.
+    For instance, if we have {'1', '2', '3'}, we compute the closest_concepts for:
+    {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3} and {1, 2, 3} and return a set with all the results.
+    As we said in the comment of "find_closest_concepts", we should consider these sets as lists, permute them all
+    and compute the closest terms for each permutation. Nevertheless, I've observed that the results are very similar
+    and the performance degrades a lot, so I've commented the version below (which computes the powerset and then the 
+    permutation and I've left a simplified one that only takes into account the powerset (done by hand).
+    
+    recomm = []
+    for subset in tuple(powerset(words)):
+        if (len(subset) != 0):
+            perm = permutations(subset)
+            for subset1 in list(perm):
+                concepts = find_closest_concepts(subset1, num)
+                recomm = recomm + concepts
+    return list(OrderedDict.fromkeys(recomm)) #remove duplicates and return
+    """
+    aux = []
+    recomm = []
+    for w in words:
+        aux.append(w)
+        # if len(negative) == 0:
+        concepts = find_closest_concepts(glove_emb_dict, aux, negative, num)
+        recomm = recomm + concepts
+        # else:
+        #    concepts = find_closest_concepts_negative(aux, negative, num)
+        #    recomm = recomm + concepts
+    return recomm
 
 
 def get_suggestions(glove_emb_dict, concepts, negative, num):
@@ -236,61 +227,63 @@ def lower(x):
     return [element.lower() for element in x] ; x
 
 
-# In[23]:
-
-
-# context_embeddings_dict = load_glove("C:/Users/Lola/Dropbox/UOC/papers/2020/ASE/vectors_emasa_en.txt")
-context_embeddings_dict = load_glove("C:/Users/Lola/Dropbox/UOC/papers/2020/ASE/eAdministration_cs/vectors_eadministration.txt")
-
-
-# In[19]:
-
-
-start = time.time()
-general_embeddings_dict = load_glove("C:/Users/Lola/Documents/UOC/papers/2020/ASE/glove.6B.300d.txt")
-end = time.time()
-print(end - start)
-
-
-# In[26]:
-
 
 def suggest(concepts, negative, num):
     words = get_suggestions(context_embeddings_dict, concepts, negative, num)
-    print("** Contextual knowledge: \t %s" % (words), sep='')
+    print("Contextual knowledge: %s" % removeVerbs(words), sep='')
     words = get_suggestions(general_embeddings_dict, concepts, negative, num)
-    print("** General knowledge: \t %s" % (words), sep='')
+    print("General knowledge: %s" % (words), sep='')
     print()
 
 
-# In[43]:
+def getSlices(string):
+    s = string[1:(len(string)-1)]
+    ss = list(s.split('['))
+    slices = []
+    for slice in ss:
+        newSlice = slice.strip(' ').strip(',').strip(']')
+        if not newSlice == '':
+            slices.append(newSlice)
+    return slices
 
+def getElementsFromSlice(string):
+    li = list(string.split(", ")) 
+    return li 
 
-suggest(["lab"], [], 10)
-    # From this query, we take the following words
-    #   Contextual: supervisor, status, order, duplicate
-    #   General: -
-
-
-# In[12]:
-
-
-start = time.time()
-# euclidean_distance(general_embeddings_dict, 'plane', 'airport')
-get_suggestions(general_embeddings_dict, ['hello'], [], 5)
-end = time.time()
-print(end - start)
-
-
-# In[22]:
-
-
-print(euclidean_distance(general_embeddings_dict, 'order', 'change'))
-print(euclidean_distance(context_embeddings_dict, 'order', 'change'))
-
-
-# In[ ]:
-
+    
+def convertStringToSlices(string):
+    slicesAsText = getSlices(string)
+    slicesAsListOfLists = []
+    for sl in slicesAsText:
+        elems = getElementsFromSlice(sl)
+        slice = []
+        for e in elems:
+            slice.append(e)
+        slicesAsListOfLists.append(slice)
+    return slicesAsListOfLists
+    
 
 
 
+context_embeddings_dict = load_glove("C:/Users/Lola/Dropbox/UOC/papers/2020/ASE/emasa_cs/vectors_emasa_en.txt")
+
+
+general_embeddings_dict = load_glove("C:/Users/Lola/Documents/UOC/papers/2020/ASE/glove.6B.300d.txt")
+
+
+'''Assuming the models are queried with the following slices'''
+slices_as_string = '[[Supervisor], [Order, subordinate, create, assigned, history, status], [Worker, name]]'
+neg = []
+filter = False
+
+slices = convertStringToSlices(slices_as_string)
+for slice in slices:
+    print('\n-> ', slice)
+    sugC = get_suggestions(context_embeddings_dict, slice, neg, 10)
+    if filter :
+        sugC = removeVerbs(sugC)
+    print("Contextual knowledge: %s" % (sugC), sep='')
+    sugG = get_suggestions(general_embeddings_dict, slice, neg, 10)
+    if filter :
+        sugG = removeVerbs(sugG)
+    print("General knowledge: %s" % (sugG), sep='')

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_cQRxMHmmEeqZL9KZlDzvdg" name="metamodels" URI="emasa">
+  <packageImport xmi:id="_cXZs4HmmEeqZL9KZlDzvdg">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_YtqeIJj3Eeq6f6QI7SJcbg" name="Notice">
+    <ownedAttribute xmi:id="_p1ZTwZj6Eeq6f6QI7SJcbg" name="user"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_wGu2UJj3Eeq6f6QI7SJcbg" name="Order">
+    <ownedAttribute xmi:id="_yEa1kpj4Eeq6f6QI7SJcbg" type="_wGu2UJj3Eeq6f6QI7SJcbg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_yEbcoJj4Eeq6f6QI7SJcbg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_yEbcoZj4Eeq6f6QI7SJcbg" value="1"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="__THrgZj4Eeq6f6QI7SJcbg" type="_YtqeIJj3Eeq6f6QI7SJcbg" association="__TF2UJj4Eeq6f6QI7SJcbg"/>
+    <ownedAttribute xmi:id="_uqgeAZj5Eeq6f6QI7SJcbg" aggregation="composite">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_uqgeApj5Eeq6f6QI7SJcbg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_uqgeA5j5Eeq6f6QI7SJcbg" value="*"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_Dp96gpj6Eeq6f6QI7SJcbg" name="change">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Dp-hkJj6Eeq6f6QI7SJcbg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Dp_IoJj6Eeq6f6QI7SJcbg" value="*"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="__TF2UJj4Eeq6f6QI7SJcbg" memberEnd="__THrgZj4Eeq6f6QI7SJcbg __TI5oZj4Eeq6f6QI7SJcbg" navigableOwnedEnd="__TI5oZj4Eeq6f6QI7SJcbg">
+    <eAnnotations xmi:id="__THEcJj4Eeq6f6QI7SJcbg" source="org.eclipse.papyrus">
+      <details xmi:id="__THrgJj4Eeq6f6QI7SJcbg" key="nature" value="UML_Nature"/>
+    </eAnnotations>
+    <ownedEnd xmi:id="__TI5oZj4Eeq6f6QI7SJcbg" type="_wGu2UJj3Eeq6f6QI7SJcbg" association="__TF2UJj4Eeq6f6QI7SJcbg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_M1TeIJj5Eeq6f6QI7SJcbg"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_M1bZ8Jj5Eeq6f6QI7SJcbg" value="*"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_QTaR4JqoEeqsTo2NQZEURA" name="Supervisor"/>
+  <profileApplication xmi:id="_oiEa8JkLEeqwDZeY33gVOg">
+    <eAnnotations xmi:id="_oiQoMJkLEeqwDZeY33gVOg" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ"/>
+    </eAnnotations>
+    <appliedProfile href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#ActionLanguage"/>
+  </profileApplication>
+</uml:Model>
