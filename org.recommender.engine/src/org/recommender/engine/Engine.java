@@ -46,12 +46,15 @@ public class Engine {
 		String partialModelPath = "domain_models/emasa.uml";
 		Resource res = load(partialModelPath);
 		
+		double time0 = System.currentTimeMillis();
 		
 		Set<String> slice1 = createSliceType1(res);
 		
 		Map<String, Set<String>> slices2 = createSliceType2(res);
 		
 		Map<Set<String>, Set<String>> slices3 = createSliceType3(res);
+		
+		System.out.println("Slicing time: "+(System.currentTimeMillis()-time0) + " ms.");
 		
 		System.out.println("*** SLICES ***");
 		
@@ -70,7 +73,7 @@ public class Engine {
 //		String slicesII = "[[Notice,user],[Order,change]]";
 		String slicesIII = "[[Notice,user],[Order,Notice,change,user],[Order,change]]";
 		
-		runScript("python_scripts/NLP_Components.py", slicesIII);
+//		runScript("python_scripts/NLP_Components.py", slicesIII);
 		
 		/***********************************************************/
 		/**    Building suggestions   */
@@ -81,6 +84,8 @@ public class Engine {
 		// Assuming this is a list of suggestions provided by the NLP query:
 		List<String> words = stringToList("['notice', 'duplicate', 'history', 'assign']");
 
+		double time1 = System.currentTimeMillis();
+		
 		buildSuggestionsType1(words);
 		
 		String sourceClass = "Supervisor";
@@ -88,6 +93,8 @@ public class Engine {
 
 		Set<String> sourceClasses = new HashSet<String>(); sourceClasses.add("Supervisor"); sourceClasses.add("Supervisor"); sourceClasses.add("Order");
 		buildSuggestionsType3(sourceClasses, words);
+		
+		System.out.println("Time building suggestions: "+(System.currentTimeMillis()-time1)+" ms.");
 	}
 	
 	

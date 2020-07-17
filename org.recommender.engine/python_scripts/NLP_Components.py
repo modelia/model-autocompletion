@@ -105,6 +105,11 @@ def lemmatize_as_noun(input_word):
     m = wn.morphy(input_word, wn.NOUN)
     return m
     
+def isplural(word):
+    lemma = wn.morphy(word, 'n')
+    plural = True if word is not lemma else False
+    return plural
+    
 # If the word we provide doesn't exists as is in wordnet, we lemmatize it and analyse the result as if it was the word we received.
 # If the lemmatization returns None, it is not a proper dictionary word.
 #
@@ -140,6 +145,13 @@ def removeVerbs(list):
     result = []
     for w in list:
         if not (is_verb(w) and (not is_noun(w))):
+            result.append(w)
+    return result
+    
+def removePlurals(list):
+    result = []
+    for w in list:
+        if not isplural(w):
             result.append(w)
     return result
 
@@ -282,8 +294,10 @@ for slice in slices:
     sugC = get_suggestions(context_embeddings_dict, slice, neg, 10)
     if filter :
         sugC = removeVerbs(sugC)
+        sugC = removePlurals(sugC)
     print("Contextual knowledge: %s" % (sugC), sep='')
     sugG = get_suggestions(general_embeddings_dict, slice, neg, 10)
     if filter :
         sugG = removeVerbs(sugG)
+        sugG = removePlurals(sugG)
     print("General knowledge: %s" % (sugG), sep='')
