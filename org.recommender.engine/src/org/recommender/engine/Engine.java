@@ -71,7 +71,7 @@ public class Engine {
 		
 //		String sliceI = "[Order, Notice]";
 //		String slicesII = "[[Notice,user],[Order,change]]";
-		String slicesIII = "[[Notice,user],[Order,Notice,change,user],[Order,change]]";
+//		String slicesIII = "[[Notice,user],[Order,Notice,change,user],[Order,change]]";
 		
 //		runScript("python_scripts/NLP_Components.py", slicesIII);
 		
@@ -103,6 +103,7 @@ public class Engine {
 	 * Methods model slicing            *
 	 ************************************/
 	
+	@SuppressWarnings("restriction")
 	private static Set<String> createSliceType1(Resource res) {
 		Set<String> modelElemsNames = new HashSet<String>();
 		for (EObject c : res.getContents()) {
@@ -117,6 +118,7 @@ public class Engine {
 		return modelElemsNames;
 	}
 
+	@SuppressWarnings("restriction")
 	private static Map<String, Set<String>> createSliceType2(Resource res) {
 		Map<String, Set<String>> result = new HashMap<String, Set<String>>();
 		for (EObject c : res.getContents()) {
@@ -135,6 +137,7 @@ public class Engine {
 		return result;
 	}
 	
+	@SuppressWarnings("restriction")
 	private static Map<Set<String>, Set<String>> createSliceType3(Resource res) {
 		
 		Set<ClassImpl> classes = getClasses(res);
@@ -163,6 +166,7 @@ public class Engine {
 		return result;
 	}
 
+	@SuppressWarnings("restriction")
 	private static Set<ClassImpl> getClasses(Resource res) {
 		Set<ClassImpl> classes = new HashSet<ClassImpl>();
 		for (EObject c : res.getContents()) {
