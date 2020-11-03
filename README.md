@@ -5,6 +5,7 @@ Proof-of-concept tool for the autocompletion of partial domain models
 ### Prerequisites
 
 Python version 3
+
 Java version 8 or greater
 
 ## Authors
