@@ -8,14 +8,6 @@ Python version 3
 
 Java version 8 or greater
 
-## Authors
-
-* **Loli Burgueño**
-* **Robert Clarisó**
-* **Shuai Li**
-* **Sébastien Gérard**
-* **Jordi Cabot**
-
 ## License
 
 This project is licensed under the Eclipse Public License 2.0
@@ -23,4 +15,8 @@ This project is licensed under the Eclipse Public License 2.0
 ## Acknowledgments
 
 * CEA List, France
+
+## Citation
+
+[1] Loli Burgueño, Robert Clarisó, Sébastien Gérard, Shuai Li, Jordi Cabot: An NLP-Based Architecture for the Autocompletion of Partial Domain Models. CAiSE 2021: 91-106
 
